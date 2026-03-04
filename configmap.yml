@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mtv-wait-hook-scripts
+  namespace: ${NAMESPACE}
+data:
+  99999_win_firstboot_signal_conversion_done.ps1: |
+    # Write the conversion-done signal to the serial console (COM1) so the
+    # mtv-wait-hook pod watching the KubeVirt serial console can detect it.
+    $port = New-Object System.IO.Ports.SerialPort "COM1", 9600, "None", 8, "One"
+    try {
+        $port.Open()
+        $port.WriteLine("CONVERSION_DONE")
+        $port.Close()
+    } catch {
+        # Fallback: write directly to the COM1 device file
+        [System.IO.File]::WriteAllText("\\.\COM1", "CONVERSION_DONE`r`n")
+    }

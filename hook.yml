@@ -1,0 +1,8 @@
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Hook
+metadata:
+  name: mtv-wait-hook
+  namespace: openshift-mtv
+spec:
+  image: quay.io/mnecas0/mtv-wait-hook:latest
+  serviceAccount: mtv-wait-hook-sa
