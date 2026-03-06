@@ -10,7 +10,7 @@ NAMESPACE ?= default
 .PHONY: build push deploy deploy-hook deploy-target
 
 build:
-	$(CONTAINER_CMD) build -t $(IMAGE) -f Containerfile .
+	$(CONTAINER_CMD) build -t $(IMAGE) -f Containerfile post-hook
 
 push: build
 	$(CONTAINER_CMD) push $(IMAGE)
@@ -18,8 +18,8 @@ push: build
 deploy: deploy-hook deploy-target
 
 deploy-hook:
-	oc apply -f rbac.yml
-	oc apply -f hook.yml
+	oc apply -f post-hook/rbac.yml
+	oc apply -f post-hook/hook.yml
 
 deploy-target:
-	sed 's/$${NAMESPACE}/$(NAMESPACE)/g' configmap.yml | oc apply -f -
+	sed 's/$${NAMESPACE}/$(NAMESPACE)/g' post-hook/configmap.yml | oc apply -f -
