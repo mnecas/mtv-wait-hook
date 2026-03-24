@@ -9,8 +9,10 @@ NAMESPACE ?= default
 
 .PHONY: build push deploy deploy-hook deploy-target
 
+all: build push deploy-hook deploy-target
+
 build:
-	$(CONTAINER_CMD) build -t $(IMAGE) -f Containerfile post-hook
+	$(CONTAINER_CMD) build -t $(IMAGE) -f post-hook/Containerfile post-hook
 
 push: build
 	$(CONTAINER_CMD) push $(IMAGE)
@@ -22,4 +24,4 @@ deploy-hook:
 	oc apply -f post-hook/hook.yml
 
 deploy-target:
-	sed 's/$${NAMESPACE}/$(NAMESPACE)/g' post-hook/configmap.yml | oc apply -f -
+	sed 's/$${NAMESPACE}/$(NAMESPACE)/g' signal-script/configmap.yml | oc apply -f -
